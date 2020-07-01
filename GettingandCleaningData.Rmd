@@ -1,0 +1,74 @@
+---
+title: "Code Book"
+author: "Kit Smith"
+date: "7/1/2020"
+output: rmarkdown::github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+This code book describes how the data in the ```UCI HAR Dataset``` was transformed into ```tidydata.txt``` and summarizes the variables thereof. 
+
+****** 
+
+### Data
+
+```tidydata.txt``` contains data from the following files the ```UCI HAR Dataset``` :
+
+    •	"features.txt"
+
+    •	"activity_labels.txt"
+
+    •	"train/X_train.txt"
+
+    •	"train/y_train.txt"
+
+    •	"test/X_test.txt"
+
+    •	"test/y_test.txt"
+
+****** 
+
+### Transformation
+
+
+The R script, ```run_analysis.R```, does the following:
+
+1. Downloads and unzips the dataset
+    
+2. Loads the relevant files
+    
+3. Extracts the mean and standard deviation columns from the training and test datasets
+    
+4. Merges the data and adds descriptive activity names
+
+5. Creates a tidy dataset showing the mean value of each variable by subject
+
+6. Stores the above data set in the file ```tidydata.txt```
+    
+
+The script uses both the ```dplyr``` and ```mgsub``` packages.
+
+******
+
+### Variables
+
+##### Identifiers
+```subject``` - the test subject  
+```activity``` - the activity performed  <cr>
+
+##### Activity Labels
+```{r,echo = FALSE, comment=NA}
+    df<-data.frame(values = c(1:6), activity = c("WALKING", "WALKING_UPSTAIRS", "WALKING_DOWNSTAIRS", "SITTING", "STANDING", "LAYING"))
+print(df, row.names = FALSE)
+```
+##### Mesurements
+```{r,echo = FALSE, comment=NA}
+features <- read.table("UCI HAR Dataset/features.txt")
+means <- grep("mean()|std()", features[,2])
+
+df2<-data.frame(Measurment = sapply(features[,2], function(x) {gsub("[()]","",x)})[means])
+print(df2, row.names= FALSE, col.names = FALSE)
+
+```
